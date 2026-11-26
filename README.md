@@ -1,6 +1,13 @@
 # dsh-kylin-notifier
 
+[![npm version](https://img.shields.io/npm/v/dsh-kylin-notifier.svg)](https://www.npmjs.com/package/dsh-kylin-notifier)
+[![license](https://img.shields.io/npm/l/dsh-kylin-notifier.svg)](LICENSE)
+[![node](https://img.shields.io/node/v/dsh-kylin-notifier.svg)](https://nodejs.org)
+
 银河麒麟桌面消息提醒 —— 给 DSH（DeepSeek Harness）用的桌面通知插件。
+
+> 已在 npm 发布：`npm i -g dsh-kylin-notifier` 或在 DSH 里 `dsh plugin add dsh-kylin-notifier`；
+> 源码托管在 [github.com/xingsheng6/dsh-kylin-notifier](https://github.com/xingsheng6/dsh-kylin-notifier)。
 
 对话跑完、工具等你确认、或者智能体在等你选答案的时候，桌面右下角弹一条通知；
 **点一下通知，就能直接跳回对应的那次对话。**
@@ -57,6 +64,7 @@ DSH 是网页界面。你切去干别的活儿的时候，不知道对话已经�
 DSH 的插件统一装在 profile 里，用 `dsh plugin`（内部转发给 pnpm）：
 
 ```bash
+# 从 npm 安装
 dsh plugin add dsh-kylin-notifier
 ```
 
@@ -196,6 +204,9 @@ python3 -m py_compile bridge/notify_bridge.py bridge/toast_window.py
 
 ## 版本
 
+- **1.3.1** — 首次发布到 npm 的版本，内容与 1.3.0 一致（1.3.0 发布后立即补发，
+  用于修正 npm 上的版本标记）。功能：点击通知就地切换对话，不再刷新整页；
+  设置页换成新的分组式布局；停留时间改为 1/3/5/10/30/60 秒；卡片加三种出现位置与三种动效。
 - **1.3.0** — 点击通知就地切换对话，不再刷新整页；设置页换成新的分组式布局；
   停留时间改为 1/3/5/10/30/60 秒；卡片加三种出现位置与三种动效。
 - **1.2.0** — 深色主题重做；修复空闲后新卡片瞬间消失；同一时刻只保留一张卡片。
