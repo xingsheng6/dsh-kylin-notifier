@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="560" viewBox="0 0 480 560">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3d42"/>
+      <stop offset="1" stop-color="#2e3136"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <rect width="480" height="560" fill="#1b1d21"/>
+  <text x="24" y="40" fill="#9aa0a8" font-size="15" font-family="sans-serif">模拟：屏幕右上角弹窗（UKUI 样式）</text>
+
+  <!-- 场景1：对话完成 -->
+  <g filter="url(#shadow)">
+    <rect x="24" y="60" width="432" height="108" rx="10" fill="url(#bg)" stroke="#4a4e55"/>
+    <circle cx="58" cy="92" r="16" fill="#1f6feb"/>
+    <path d="M51 92h14M51 98h9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+    <text x="88" y="88" fill="#c9cdd4" font-size="13" font-family="sans-serif">DeepSeek Harness</text>
+    <text x="414" y="88" fill="#8a9099" font-size="12" text-anchor="end" font-family="sans-serif">现在</text>
+    <text x="88" y="116" fill="#f2f4f7" font-size="16" font-weight="bold" font-family="sans-serif">麒麟弹窗插件</text>
+    <text x="88" y="142" fill="#b7bdc6" font-size="13" font-family="sans-serif">对话已完成 · 麒麟弹窗插件</text>
+  </g>
+
+  <!-- 场景2：待确认 -->
+  <g filter="url(#shadow)">
+    <rect x="24" y="188" width="432" height="108" rx="10" fill="url(#bg)" stroke="#4a4e55"/>
+    <circle cx="58" cy="220" r="16" fill="#1f6feb"/>
+    <path d="M51 92h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="58" cy="220" r="16" fill="#1f6feb"/>
+    <text x="52" y="226" fill="#fff" font-size="18" font-weight="bold" font-family="sans-serif">!</text>
+    <text x="88" y="216" fill="#c9cdd4" font-size="13" font-family="sans-serif">DeepSeek Harness</text>
+    <text x="414" y="216" fill="#8a9099" font-size="12" text-anchor="end" font-family="sans-serif">现在</text>
+    <text x="88" y="244" fill="#f2f4f7" font-size="16" font-weight="bold" font-family="sans-serif">待确认 · 麒麟弹窗插件</text>
+    <text x="88" y="270" fill="#b7bdc6" font-size="13" font-family="sans-serif">需要你确认 bash（点击打开对话）</text>
+  </g>
+
+  <!-- 场景3：待回答 -->
+  <g filter="url(#shadow)">
+    <rect x="24" y="316" width="432" height="128" rx="10" fill="url(#bg)" stroke="#4a4e55"/>
+    <circle cx="58" cy="348" r="16" fill="#1f6feb"/>
+    <text x="52" y="354" fill="#fff" font-size="18" font-weight="bold" font-family="sans-serif">?</text>
+    <text x="88" y="344" fill="#c9cdd4" font-size="13" font-family="sans-serif">DeepSeek Harness</text>
+    <text x="414" y="344" fill="#8a9099" font-size="12" text-anchor="end" font-family="sans-serif">现在</text>
+    <text x="88" y="372" fill="#f2f4f7" font-size="16" font-weight="bold" font-family="sans-serif">待回答 · 麒麟弹窗插件</text>
+    <text x="88" y="398" fill="#b7bdc6" font-size="13" font-family="sans-serif">通知后端用哪一个？</text>
+    <text x="88" y="420" fill="#8a9099" font-size="12" font-family="sans-serif">（点击通知自动打开该对话）</text>
+  </g>
+
+  <!-- 对比：旧样式 -->
+  <g filter="url(#shadow)">
+    <rect x="24" y="464" width="432" height="72" rx="10" fill="url(#bg)" stroke="#4a4e55" opacity="0.6"/>
+    <text x="40" y="492" fill="#8a9099" font-size="12" font-family="sans-serif">旧样式（问题）：看不出哪个对话</text>
+    <text x="40" y="518" fill="#b7bdc6" font-size="14" font-family="sans-serif">DeepSeek Harness / 对话已完成 · DeepSeek Harness</text>
+  </g>
+</svg>

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Qilin desktop message alerts",
+    "description": "Shows a desktop notification when a conversation finishes or needs your confirmation; clicking it opens that conversation."
+  }
+}

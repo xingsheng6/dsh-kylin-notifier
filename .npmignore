@@ -1,0 +1,29 @@
+# 不发布到 npm 的内容（package.json 的 files 白名单是主控，
+# 这里决定同名字段覆盖不到的遗漏项）
+node_modules/
+bridge/__pycache__/
+*.pyc
+*.pyo
+
+# 开发/调试用，不属于插件运行时
+host/
+client/
+icons/
+src/
+preview/
+docs/
+
+# 本地打包产物
+麒麟桌面消息提醒-插件包-*/
+*.zip
+
+# 编辑器与系统杂项
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.bak
+*.bak-*
+*.tar.gz
+
+# 读者文档（LICENSE / NOTICE / README 会被 npm 强制包含，留白即可）

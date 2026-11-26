@@ -1,0 +1,50 @@
+dsh-kylin-notifier
+==================
+
+本项目代码以 MIT 许可证发布，见根目录 LICENSE。
+
+依赖与随包分发的第三方资源如下。
+
+------------------------------------------------------------------------
+1. 随包分发的字体（SIL Open Font License 1.1）
+------------------------------------------------------------------------
+
+fonts/ 目录下的字体用于保证通知卡片在各台机器上渲染一致。它们均以
+SIL Open Font License 1.1 授权；OFL 1.1 允许随软件一起打包与再分发，
+条件是随字体附带许可证文本、且不单独售卖字体文件本身。以下版权信息
+抄自字体文件内置的 name 表：
+
+  Inter-Regular.ttf / Inter-Medium.ttf / Inter-SemiBold.ttf / Inter-Bold.ttf
+    Copyright 2016 The Inter Project Authors
+    https://github.com/rsms/inter
+    许可：SIL Open Font License 1.1（https://openfontlicense.org）
+
+  NotoSansSC-Regular.ttf / NotoSansSC-Medium.ttf / NotoSansSC-Bold.ttf
+    (c) 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
+    来源：Noto Sans SC（经子集裁剪），https://github.com/notofonts/noto-cjk
+    许可：SIL Open Font License 1.1（http://scripts.sil.org/OFL）
+
+OFL 1.1 全文：https://openfontlicense.org/open-font-license-official-text/
+字体来源与裁剪说明见 fonts/README.md。
+
+说明：macOS 系统字体 San Francisco (SF Pro) 为 Apple 专有字体，其许可
+不允许再分发，因此本项目改用开源的 Inter 作为最接近的替代。
+
+------------------------------------------------------------------------
+2. 运行环境依赖（不随包分发）
+------------------------------------------------------------------------
+
+本包运行时依赖以下宿主机组件，它们不包含在本包中：
+
+  - DSH (DeepSeek Harness) 运行时及其 Cordis 插件框架
+  - Node.js >= 20
+  - Python 3.8+（bridge/ 下的通知桥接脚本）
+  - Linux 桌面环境与 D-Bus 会话总线（freedesktop 通知规范）
+  - 可选：银河麒麟桌面 SDK (libkysdk-notification)，使用 Kylin 原生后端时
+
+------------------------------------------------------------------------
+3. 本项目原创代码
+------------------------------------------------------------------------
+
+index.js、client.js、bridge/*.py、cordis.patch.yml、icon.svg、
+assets/*.svg 等均为本项目原创，按 MIT 许可证授权，见 LICENSE。

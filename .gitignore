@@ -1,0 +1,18 @@
+# 运行时不进仓库的产物
+node_modules/
+bridge/__pycache__/
+*.pyc
+*.pyo
+
+# 本地打包产物
+麒麟桌面消息提醒-插件包-*/
+*.zip
+*.tar.gz
+*.log
+
+# 编辑器与系统杂项
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+*.bak-*

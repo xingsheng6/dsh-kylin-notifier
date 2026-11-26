@@ -1,0 +1,98 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { width:1240px; height:820px; overflow:hidden;
+  font-family:"Noto Sans CJK SC","PingFang SC",sans-serif;
+  background:
+    radial-gradient(1200px 700px at 20% 0%, #2b4b6f 0%, #16243a 45%, #0d1522 100%);
+  position:relative; }
+/* 模拟桌面壁纸上的窗口 */
+.desk { position:absolute; inset:0; }
+.deskwin { position:absolute; left:70px; top:120px; width:700px; height:480px;
+  background:#1e1e22; border-radius:10px; opacity:.5;
+  box-shadow:0 20px 60px rgba(0,0,0,.5); }
+.deskwin .bar { height:34px; background:#2a2a30; border-radius:10px 10px 0 0; }
+.deskwin .ln { height:11px; background:#33333b; border-radius:5px; margin:16px 22px 0; }
+
+/* ===== macOS 风格通知卡片 ===== */
+.toast {
+  position:absolute; right:26px; top:26px; width:372px;
+  background:rgba(48,48,52,.82);
+  -webkit-backdrop-filter:blur(26px) saturate(180%);
+  backdrop-filter:blur(26px) saturate(180%);
+  border-radius:19px;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 22px 55px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35);
+  padding:15px 16px 14px; color:#fff;
+  overflow:hidden;
+}
+.toast .top { display:flex; align-items:flex-start; gap:11px; }
+.icon { width:38px; height:38px; border-radius:9px; flex:none;
+  background:linear-gradient(160deg,#4a7cf7,#2f56d8);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.35); }
+.icon svg { width:22px; height:22px; fill:#fff; }
+.meta { flex:1; min-width:0; }
+.app { font-size:12.5px; color:rgba(255,255,255,.62); letter-spacing:.2px; margin-bottom:1px; }
+.when { font-size:11.5px; color:rgba(255,255,255,.42); }
+.title { font-size:14.5px; font-weight:600; margin:5px 0 3px; letter-spacing:.1px; }
+.body { font-size:13px; line-height:1.5; color:rgba(255,255,255,.82); }
+.xbtn { width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.75); font-size:11px; line-height:20px; text-align:center; flex:none; }
+.acts { display:flex; gap:8px; margin-top:13px; }
+.act { flex:1; text-align:center; padding:7px 0; border-radius:9px; font-size:13px;
+  background:rgba(255,255,255,.13); color:#fff; font-weight:500; }
+.act.primary { background:rgba(74,124,247,.92); }
+.act:hover { background:rgba(255,255,255,.2); }
+.prog { position:absolute; left:0; bottom:0; height:2px; width:58%;
+  background:linear-gradient(90deg,rgba(255,255,255,.55),rgba(255,255,255,.05)); }
+
+/* 第二张：堆叠在后面 */
+.toast.second { right:26px; top:186px; transform:scale(.95); opacity:.55; z-index:-1; }
+.toast.third  { right:26px; top:172px; transform:scale(.9);  opacity:.3;  z-index:-2; }
+.toast.main { z-index:1; }
+
+.caption { position:absolute; left:44px; bottom:34px; color:rgba(255,255,255,.5);
+  font-size:13px; letter-spacing:.3px; }
+</style></head><body>
+<div class="desk">
+  <div class="deskwin"><div class="bar"></div><div class="ln" style="width:70%"></div><div class="ln" style="width:88%"></div><div class="ln" style="width:55%"></div></div>
+</div>
+
+<!-- 堆叠的后两张（模拟 macOS 多条通知叠放） -->
+<div class="toast third">
+  <div class="top">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg></div>
+    <div class="meta"><div class="app">DeepSeek Harness</div></div>
+  </div>
+</div>
+<div class="toast second">
+  <div class="top">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg></div>
+    <div class="meta"><div class="app">DeepSeek Harness</div><div class="when">刚刚</div></div>
+  </div>
+  <div class="title">dsh web 托盘启动与退出</div>
+  <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+</div>
+
+<!-- 主通知 -->
+<div class="toast main">
+  <div class="top">
+    <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg></div>
+    <div class="meta">
+      <div class="app">DeepSeek Harness</div>
+      <div class="when">刚刚</div>
+    </div>
+    <div class="xbtn">✕</div>
+  </div>
+  <div class="title">麒麟弹窗插件</div>
+  <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+  <div class="acts">
+    <div class="act primary">进入对话</div>
+    <div class="act">稍后</div>
+  </div>
+  <div class="prog"></div>
+</div>
+
+<div class="caption">macOS 风格 · 毛玻璃卡片 · 圆角 19px · 右上角堆叠</div>
+</body></html>

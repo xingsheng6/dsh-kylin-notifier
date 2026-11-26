@@ -1,0 +1,18 @@
+- insert:
+    - id: kylin-notifier
+      name: '@local/kylin-notifier'
+      config:
+        enabled: true
+        notifyOnComplete: true
+        notifyOnApproval: true
+        notifyOnQuestion: true
+        appName: DeepSeek Harness
+        icon: dialog-information
+        actionIcon: true
+        actionLabel: "↗"
+        dismissLabel: ""
+        timeoutMs: 8000
+        sound: false
+        maxPerSession: 3
+        minIntervalSeconds: 0
+        debug: true

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, "SF Pro Text", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    width: 1240px; height: 780px; display: flex; gap: 40px;
+    padding: 40px; background: #0a0a0a;
+  }
+  .pane { flex:1; position:relative; border-radius:20px; overflow:hidden;
+          display:flex; align-items:center; justify-content:center; }
+  .pane.light { background: #ECECED; }
+  .pane.dark  { background: #1A1A1C; }
+  .label { position:absolute; bottom:16px; left:20px; font-size:13px;
+           letter-spacing:.04em; text-transform:uppercase; font-weight:600; }
+  .pane.light .label { color:#8a8a8e; }
+  .pane.dark  .label { color:#5c5c60; }
+
+  /* ---------- 毛玻璃面板 ---------- */
+  .glass {
+    width: 400px; border-radius: 26px; padding: 17px 19px 16px;
+    display: flex; gap: 13px; align-items: flex-start;
+    position: relative;
+  }
+  .light .glass {
+    background: linear-gradient(168deg, rgba(255,255,255,0.82), rgba(250,250,252,0.74));
+    border: 0.5px solid rgba(255,255,255,0.95);
+    box-shadow:
+      0 1px 1px rgba(0,0,0,0.04),
+      0 8px 26px rgba(0,0,0,0.10),
+      0 24px 60px rgba(0,0,0,0.09),
+      inset 0 0.5px 0 rgba(255,255,255,1);
+  }
+  .dark .glass {
+    background: linear-gradient(168deg, rgba(58,58,62,0.72), rgba(38,38,42,0.78));
+    border: 0.5px solid rgba(255,255,255,0.14);
+    box-shadow:
+      0 1px 1px rgba(0,0,0,0.30),
+      0 8px 26px rgba(0,0,0,0.42),
+      0 24px 60px rgba(0,0,0,0.48),
+      inset 0 0.5px 0 rgba(255,255,255,0.13);
+  }
+
+  /* ---------- iMessage 气泡图标 ---------- */
+  .appicon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink:0;
+    background: linear-gradient(180deg,#5FF36A,#16C93D);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.16), inset 0 0.5px 0 rgba(255,255,255,0.5);
+    position: relative;
+  }
+  .bubble {
+    width: 24px; height: 18px; background:#fff; border-radius: 9px;
+    position: relative; margin-top:-3px;
+  }
+  .bubble::after {
+    content:''; position:absolute; left:5px; bottom:-4px;
+    border-left: 5px solid transparent;
+    border-right: 0 solid transparent;
+    border-top: 6px solid #fff;
+    transform: skewX(-12deg);
+  }
+
+  .content { flex:1; min-width:0; }
+  .toprow { display:flex; align-items:baseline; justify-content:space-between; margin-top:1px; }
+  .appname { font-size:14.5px; font-weight:600; letter-spacing:-0.01em; }
+  .light .appname { color:#1c1c1e; }
+  .dark  .appname { color:#F2F2F7; }
+  .when { font-size:12.5px; }
+  .light .when { color:rgba(60,60,67,0.45); }
+  .dark  .when { color:rgba(235,235,245,0.38); }
+
+  .title { font-size:14.5px; font-weight:600; margin-top:3px; letter-spacing:-0.01em; }
+  .light .title { color:#1c1c1e; }
+  .dark  .title { color:#FFFFFF; }
+
+  .body { font-size:14.5px; line-height:1.35; margin-top:1px; letter-spacing:-0.01em; }
+  .light .body { color:rgba(60,60,67,0.82); }
+  .dark  .body { color:rgba(235,235,245,0.72); }
+</style></head>
+<body>
+  <!-- 浅色 -->
+  <div class="pane light">
+    <div class="glass">
+      <div class="appicon"><div class="bubble"></div></div>
+      <div class="content">
+        <div class="toprow"><span class="appname">信息</span><span class="when">现在</span></div>
+        <div class="title">麒麟弹窗插件</div>
+        <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+      </div>
+    </div>
+    <div class="label">Light · macOS 原生</div>
+  </div>
+
+  <!-- 深色 -->
+  <div class="pane dark">
+    <div class="glass">
+      <div class="appicon"><div class="bubble"></div></div>
+      <div class="content">
+        <div class="toprow"><span class="appname">信息</span><span class="when">现在</span></div>
+        <div class="title">麒麟弹窗插件</div>
+        <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+      </div>
+    </div>
+    <div class="label">Dark · macOS 原生</div>
+  </div>
+</body></html>

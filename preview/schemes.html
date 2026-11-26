@@ -1,0 +1,100 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+ * { box-sizing: border-box; }
+ body { margin:0; background:#1b1b1f; font-family:"Noto Sans CJK SC","WenQuanYi Micro Hei",sans-serif; padding:30px; width:470px; }
+ h2 { color:#e8e8ea; font-size:17px; margin:0 0 3px; font-weight:600; }
+ .sub { color:#8b8b93; font-size:12px; margin-bottom:12px; }
+ .row { margin-bottom:26px; }
+ .card { width:392px; background:#3a3a3f; border-radius:9px; padding:15px 17px;
+   box-shadow:0 3px 16px rgba(0,0,0,.45); color:#efefef; }
+ .card.dead { opacity:.45; }
+ .head { display:flex; align-items:center; gap:8px; margin-bottom:11px; }
+ .bell { width:15px; height:15px; fill:#c9c9cf; flex:none; }
+ .app { font-size:13px; color:#bcbcc4; flex:1; }
+ .x { width:19px; height:19px; border-radius:50%; background:#55555c; color:#cfcfd6;
+      font-size:11px; line-height:19px; text-align:center; flex:none; }
+ .tag { font-size:12px; color:#8f8f97; flex:none; }
+ .title { font-size:16px; font-weight:600; color:#fff; margin-bottom:7px; }
+ .body { font-size:13.5px; color:#c8c8d0; line-height:1.55; }
+ .btns { display:flex; gap:9px; margin-top:12px; }
+ .btn { background:#4c4c53; color:#e6e6ec; border-radius:6px; padding:6px 15px; font-size:13px; }
+ .btn.ghost { background:transparent; color:#9a9aa2; }
+ .fate { margin-top:9px; font-size:12.5px; }
+ .ok { color:#5fd08b; } .bad { color:#e0736b; } .warn { color:#e0b45f; }
+ .badge { display:inline-block; font-size:11px; padding:1px 7px; border-radius:9px;
+          background:#24402f; color:#6fe09b; margin-left:6px; }
+ .side { width:392px; background:#26262b; border-radius:9px; padding:12px 15px; margin-top:9px; }
+ .side .st { font-size:13px; color:#9a9aa2; margin-bottom:6px; }
+ .side .item { font-size:12.5px; color:#b6b6be; padding:6px 0; border-top:1px solid #313138; }
+ .side .item span { color:#6f6f78; }
+</style></head>
+<body>
+
+<div class="row">
+  <h2>① 现状（当前插件）</h2>
+  <div class="sub">请求停留 10 秒，实际 8 秒被收进通知中心，按钮随后消失</div>
+  <div class="card dead">
+    <div class="head">
+      <svg class="bell" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z" fill-rule="evenodd"/></svg>
+      <div class="app">DeepSeek Harness</div>
+      <div class="tag">已过期</div>
+    </div>
+    <div class="title">麒麟弹窗插件</div>
+    <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+    <div class="fate bad">✗ 被收走，按钮变空 → 点不到「进入对话」</div>
+  </div>
+</div>
+
+<div class="row">
+  <h2>② 方案 A · 正文写指引</h2>
+  <div class="sub">不依赖按钮，点击通知本体即可打开；但仍 8 秒消失</div>
+  <div class="card">
+    <div class="head">
+      <svg class="bell" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg>
+      <div class="app">DeepSeek Harness</div>
+      <div class="x">✕</div>
+    </div>
+    <div class="title">麒麟弹窗插件</div>
+    <div class="body">会话已完成，请到 DeepSeek Harness 中查看（点击此通知打开对话）</div>
+    <div class="fate warn">△ 8 秒后收进通知中心，正文被压缩</div>
+  </div>
+  <div class="side">
+    <div class="st">收进通知中心后长这样</div>
+    <div class="item">麒麟弹窗插件<br><span>会话已完成…（点击此通知打开对话）</span></div>
+  </div>
+</div>
+
+<div class="row">
+  <h2>③ 方案 C · 常驻通知<span class="badge">实测有效</span></h2>
+  <div class="sub">resident=true + timeout=0，一直停在右上角，直到你点按钮或 X</div>
+  <div class="card">
+    <div class="head">
+      <svg class="bell" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg>
+      <div class="app">DeepSeek Harness</div>
+      <div class="x">✕</div>
+    </div>
+    <div class="title">麒麟弹窗插件</div>
+    <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+    <div class="btns"><div class="btn">进入对话</div></div>
+    <div class="fate ok">✓ 一直可见（实测 100 秒以上仍在），按钮不会消失</div>
+  </div>
+</div>
+
+<div class="row">
+  <h2>④ 方案 B · 自绘常驻小窗</h2>
+  <div class="sub">不走系统通知，自己画在屏幕右上角，停留时间与按钮完全可控</div>
+  <div class="card" style="border-left:3px solid #5b8def;">
+    <div class="head">
+      <svg class="bell" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v4l-2 4h18l-2-4V9a7 7 0 00-7-7zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg>
+      <div class="app">DeepSeek Harness · 麒麟桌面消息提醒</div>
+      <div class="x">✕</div>
+    </div>
+    <div class="title">麒麟弹窗插件</div>
+    <div class="body">会话已完成，请到 DeepSeek Harness 中查看</div>
+    <div class="btns"><div class="btn">进入对话</div><div class="btn ghost">稍后</div></div>
+    <div class="fate ok">✓ 停留时间、按钮、位置全部自定义（工作量最大）</div>
+  </div>
+</div>
+
+</body></html>
