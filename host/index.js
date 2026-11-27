@@ -63,7 +63,7 @@ function loadSchemastery() {
     return createRequire(import.meta.url)('@deepseek-ai/schemastery');
   } catch { /* fall through to the profile below */ }
   // 2. This bundle's location inside the active profile. The link is
-  //    <profile>/node_modules/@local/kylin-notifier, so probing upward from the
+  //    <profile>/node_modules/<bundle package name>, so probing upward from the
   //    real path lands on the profile's node_modules.
   const candidates = [];
   try {
@@ -745,6 +745,28 @@ function installSettingsService(ctx, read, persist, onTest) {
           }
           return;
         }
+        if (url.searchParams.get('action') === 'commit') {
+          // The page already pushed every control to the Host as it was used,
+          // so this is "make it durable now" rather than a staged batch: it
+          // rewrites the profile entry from the live settings so a restart
+          // keeps exactly what the form shows.
+          try {
+            const current = read();
+            const keys = Object.keys(current);
+            for (const key of keys) {
+              try {
+                await persist(key, current[key]);
+              } catch (error) {
+                sendJson(res, 500, { ok: false, error: `${key}: ${String((error && error.message) || error)}` });
+                return;
+              }
+            }
+            sendJson(res, 200, { ok: true, saved: keys.length, settings: read() });
+          } catch (error) {
+            sendJson(res, 500, { ok: false, error: String((error && error.message) || error) });
+          }
+          return;
+        }
         if (url.searchParams.get('action') === 'test') {
           // The settings page asks us to fire one real notification so the
           // "Try it" buttons can demonstrate the actual desktop popup.
@@ -827,7 +849,25 @@ async function apply(ctx, config) {
   installSettingsService(ctx, read, (key, value) => persistSetting(ctx, key, value),
     (summary, body) => sendTestRef(summary, body));
 
+  /** The client that last delivered a notification (used to withdraw popups). */
   let bridge;
+  /** One lazy renderer per style: { toast?: BridgeClient, native?: BridgeClient }. */
+  const bridges = Object.create(null);
+  // Retiring a renderer must not swallow the notification just sent through
+  // it, so a switched-away client is asked to shut down after its current
+  // popup has had time to appear (and be dismissed) on its own.
+  const RETIRE_DELAY_MS = 8000;
+  const retiring = new Map();
+  function retireLater(kind, client) {
+    if (!client || client.closed || retiring.has(kind)) return;
+    const timer = setTimeout(() => {
+      retiring.delete(kind);
+      releaseRenderer(client);
+      if (bridges[kind] === client) delete bridges[kind];
+    }, RETIRE_DELAY_MS);
+    if (typeof timer.unref === 'function') timer.unref();
+    retiring.set(kind, timer);
+  }
   let authenticatedUrl = (base) => base;
   let advertisedUrl = '';
 
@@ -1054,15 +1094,18 @@ async function apply(ctx, config) {
   });
 
   /**
-   * Get the renderer for this apply.
+   * The renderer for the CURRENT settings.
    *
-   * Each apply owns exactly one renderer. A module-level registry was tried
-   * first and must not come back: `releaseRenderer` tore down whichever client
-   * the registry pointed at, so a second apply (or any effect teardown)
-   * killed the renderer the first apply was still using. The child died
-   * seconds after spawning and no card ever mapped.
+   * The backend is re-evaluated on every notification instead of being pinned
+   * to whatever the config said at apply time. A pin made the settings page a
+   * lie: switching between "system notification" and the self-drawn card did
+   * not take effect until the whole Host was restarted, so a user who picked
+   * the system style still got the glass card from the process that had been
+   * spawned at startup. Two clients may now coexist, but only while both
+   * styles are actually in use, and each one is still owned by exactly one
+   * apply (see the module-level registry note below).
    */
-  function acquireRenderer(config) {
+  function rendererFor(config) {
     const client = new BridgeClient(ctx, config);
     client.kind = config.renderer === 'native' ? 'native' : 'toast';
     return client;
@@ -1074,10 +1117,27 @@ async function apply(ctx, config) {
 
   function sendForSession(sessionId, summary, body) {
     settings = read();
-    if (!bridge) {
-      bridge = acquireRenderer(settings);
-      ctx.effect(() => () => releaseRenderer(bridge), 'kylin-notifier: bridge lifetime');
+    // Pick the backend for the settings in force right now. `bridge` only
+    // caches the client of the style that is currently selected; when the
+    // user switches styles, the other client is reused (or spawned) and the
+    // stale one is torn down once its own last notification has expired.
+    const wantKind = settings.renderer === 'native' ? 'native' : 'toast';
+    let client = bridges[wantKind];
+    if (!client || client.closed) {
+      client = rendererFor(settings);
+      bridges[wantKind] = client;
+      const owned = wantKind;
+      ctx.effect(() => () => {
+        releaseRenderer(client);
+        if (bridges[owned] === client) delete bridges[owned];
+      }, `kylin-notifier: ${owned} renderer lifetime`);
+      // Any notification still queued for the other style belongs to a
+      // backend the user just switched away from; drop the stale client.
+      for (const kind of Object.keys(bridges)) {
+        if (kind !== wantKind) retireLater(kind, bridges[kind]);
+      }
     }
+    bridge = client;
     const base = advertisedUrl || (typeof ctx.get('webApp')?.getAdvertisedUrl === 'function'
       ? ctx.get('webApp').getAdvertisedUrl()
       : '');

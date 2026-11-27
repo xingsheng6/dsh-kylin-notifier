@@ -19,7 +19,7 @@
  * services declared in `inject`.
  */
 window.__ModuleLoader__.load({
-  id: '@local/kylin-notifier',
+  id: 'dsh-kylin-notifier',
   factory: (require) => {
     var module = { exports: {} };
     var exports = module.exports;
@@ -36,7 +36,7 @@ window.__ModuleLoader__.load({
     // beside the shipped sections; reusing a shipped id would replace it.
     const SECTION_ID = 'kylin-notifier';
     /** Bundle package name: the `plugins.bundle.config` slot key. */
-    const BUNDLE_NAME = '@local/kylin-notifier';
+    const BUNDLE_NAME = 'dsh-kylin-notifier';
     /** Dictionary namespace for this plugin's own copy. */
     const NS = 'kylin-notifier';
 
@@ -825,6 +825,23 @@ window.__ModuleLoader__.load({
     //#endregion
 
     /**
+     * Ask the Host to make the settings shown here durable. Every control on
+     * this page already writes as it is used (the Host takes effect
+     * immediately), so this is the explicit "keep it after a restart" step
+     * behind the page's own save button.
+     */
+    function commitSettings() {
+      try {
+        return fetch('/api/kylin-notifier/settings?action=commit', { method: 'POST' })
+          .then((res) => (res.ok ? res.json() : { ok: false }))
+          .then((data) => Boolean(data && data.ok))
+          .catch(() => false);
+      } catch {
+        return Promise.resolve(false);
+      }
+    }
+
+    /**
      * Trigger a REAL desktop popup through the Host's same-origin settings
      * endpoint. The browser cannot reach the Electron shell directly, but the
      * Host plugin can, so the "Try it" buttons ask the Host to send one.
@@ -945,7 +962,26 @@ window.__ModuleLoader__.load({
 
     const PAGE_CSS_TEXT = PAGE_CSS
       + '\n.ksp-root.ksp-disabled{opacity:.6;pointer-events:none;}'
-      + '\n.ksp-root .try-button.trying{opacity:.5;}';
+      + '\n.ksp-root .try-button.trying{opacity:.5;}'
+      // The page's own controls write straight to the Host, so the shared
+      // SettingsForm footer button is disabled ("nothing to save") almost all
+      // the time — it read as a dead grey box. Restyle it so it always looks
+      // clickable and says what it really does: sync the footer state.
+      // Not scoped under .ksp-root: the shared form renders its footer
+      // button as a SIBLING of this page's markup, inside div._form_*.
+      + '\nbutton:is([class*="_save_"]){'
+      + 'background:var(--blue,#007aff);color:#fff;border:1px solid var(--blue,#007aff);'
+      + 'border-radius:9px;padding:8px 20px;font-size:12.5px;font-weight:600;'
+      + 'box-shadow:0 1px 2px rgba(0,122,255,.35);}'
+      + '\nbutton:is([class*="_save_"]):hover{filter:brightness(1.06);}'
+      + '\nbutton:is([class*="_save_"]):disabled{'
+      + 'opacity:1 !important;cursor:pointer;background:rgba(0,122,255,.14);'
+      + 'color:var(--blue,#007aff);border-color:rgba(0,122,255,.30);box-shadow:none;}'
+      + '\nbutton:is([class*="_save_"]):disabled:hover{'
+      + 'background:rgba(0,122,255,.22);}'
+      + '\n.ksp-root .ksp-saved{'
+      + 'display:inline-flex;align-items:center;margin-left:10px;font-size:12.5px;'
+      + 'font-weight:600;color:var(--green);}';
 
     /** The full settings page for this bundle — renders the user-designed page verbatim. */
     function KylinSettings(props) {
@@ -1052,6 +1088,7 @@ window.__ModuleLoader__.load({
           if (cur.disabled) return;
           const target = event.target;
 
+
           const play = target.closest('[data-play]');
           if (play) {
             event.preventDefault();
@@ -1107,13 +1144,49 @@ window.__ModuleLoader__.load({
           }
         };
 
+        // Persist what the page shows, then confirm next to the button.
+        const handleSave = (btn) => {
+          commitSettings().then((ok) => {
+            const footer = btn && btn.parentElement;
+            if (!footer) return;
+            let flash = footer.querySelector('.ksp-saved');
+            if (!flash) {
+              flash = document.createElement('span');
+              flash.className = 'ksp-saved';
+              footer.appendChild(flash);
+            }
+            flash.textContent = ok ? '✓ 已保存' : '保存失败';
+            flash.style.color = ok ? '' : '#d70015';
+            window.clearTimeout(flash.__t);
+            flash.__t = window.setTimeout(() => { flash.textContent = ''; }, 2200);
+          });
+        };
+
         root.addEventListener('click', onClick);
         root.addEventListener('input', onInput);
         root.addEventListener('change', onInput);
+        // The shared form's footer button renders as a sibling of this page's
+        // markup, not inside it, so its clicks never reach the handlers above.
+        // Capture them at the document level instead (capture phase, so a
+        // disabled button's swallowed click is still seen).
+        const onSaveClick = (event) => {
+          const target = event.target;
+          if (!target || typeof target.closest !== 'function') return;
+          const btn = target.closest('button[class*="_save_"]');
+          if (!btn) return;
+          // Only the form this page belongs to — and only while mounted.
+          if (!root.isConnected || !document.contains(btn)) return;
+          if (!btn.disabled) return; // enabled: let the shared form save
+          event.preventDefault();
+          event.stopPropagation();
+          handleSave(btn);
+        };
+        document.addEventListener('click', onSaveClick, true);
         return () => {
           root.removeEventListener('click', onClick);
           root.removeEventListener('input', onInput);
           root.removeEventListener('change', onInput);
+          document.removeEventListener('click', onSaveClick, true);
         };
       }, []);
 
